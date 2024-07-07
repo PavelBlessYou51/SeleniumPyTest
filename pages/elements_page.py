@@ -1,8 +1,10 @@
-from selenium.webdriver import ActionChains
+import random
 
-from locators.elements_page_locators import TextBoxPageLocators
-from pages.base_page import BasePage
+from selenium.webdriver.common.by import By
+
 from generator.generator import generated_person
+from locators.elements_page_locators import TextBoxPageLocators, CheckBoxPageLocators
+from pages.base_page import BasePage
 
 
 class TextBoxPage(BasePage):
@@ -18,7 +20,7 @@ class TextBoxPage(BasePage):
         self.element_is_visible(self.locators.EMAIL).send_keys(email)
         self.element_is_visible(self.locators.CURRENT_ADDRESS).send_keys(current_address)
         self.element_is_visible(self.locators.PERMANENT_ADDRESS).send_keys(permanent_address)
-        # ActionChains(self.driver).scroll_by_amount(delta_x=0, delta_y=200).perform()
+        self.go_to_element(self.element_is_present(self.locators.SUBMIT))
         self.element_is_clickable(self.locators.SUBMIT).click()
         return full_name, email, current_address, permanent_address
 
@@ -28,3 +30,37 @@ class TextBoxPage(BasePage):
         current_address = self.element_is_present(self.locators.CREATED_CURRENT_ADDERSS).text.split(":")[1]
         permanent_address = self.element_is_present(self.locators.CREATED_PERMANENT_ADDRESS).text.split(":")[1]
         return full_name, email, current_address, permanent_address
+
+
+class CheckBoxPage(BasePage):
+    locators = CheckBoxPageLocators()
+
+    def open_full_list(self):
+        self.element_is_visible(self.locators.EXPAND_ALL_BUTTON).click()
+
+    def click_random_checkbox(self):
+        item_list = self.elements_are_visible(self.locators.ITEMS_LIST)
+        count = 21
+        while count != 0:
+            item = item_list[random.randint(1, 15)]
+            if count > 0:
+                self.go_to_element(item)
+                item.click()
+                count -= 1
+            else:
+                break
+
+    def get_checked_checkboxes(self):
+        checked_list = self.elements_are_present(self.locators.CHECKED_ITEMS)
+        data = list()
+        for box in checked_list:
+            title_item = box.find_element(by=By.XPATH, value=self.locators.TITLE_ITEMS)
+            data.append(title_item.text)
+        return str(data).replace(' ', '').replace('.', '').replace('doc', '').lower()
+
+    def get_output_result(self):
+        result_list = self.elements_are_present(self.locators.OUTPUT_RESULT)
+        data = list()
+        for item in result_list:
+            data.append(item.text)
+        return str(data).replace(' ', '').replace('.', '').lower()
