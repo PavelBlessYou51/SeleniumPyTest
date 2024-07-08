@@ -1,9 +1,11 @@
 import random
 
-from data.data import Person
 from faker import Faker
 
+from data.data import Person
+
 faker_ru = Faker('ru_RU')
+
 
 def generated_person():
     yield Person(
@@ -17,3 +19,11 @@ def generated_person():
         current_address=faker_ru.address(),
         permanent_address=faker_ru.address(),
     )
+
+
+def generated_file():
+    path = fr'C:\Users\user\PycharmProjects\SeleniumPyTest\filetest{random.randint(0, 999)}.txt'
+    file = open(path, 'w+', encoding="utf-8")
+    file.write(f'Hello World!{random.randint(0, 999)}')
+    file.close()
+    return file.name, path
