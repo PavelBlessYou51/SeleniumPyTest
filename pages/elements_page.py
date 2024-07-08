@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 
 from generator.generator import generated_person
 from locators.elements_page_locators import TextBoxPageLocators, CheckBoxPageLocators, RadioButtonLocators, \
-    WebTablePageLocators
+    WebTablePageLocators, ButtonPageLocators
 from pages.base_page import BasePage
 
 
@@ -139,10 +139,8 @@ class WebTablePage(BasePage):
     def delete_person(self):
         self.element_is_visible(self.locators.DELETE_BUTTON).click()
 
-
     def check_deleted(self):
         return self.element_is_present(self.locators.NO_ROWS_FOUND).text
-
 
     def select_up_to_some_rows(self):
         count = [5, 10, 20, 25, 50, 100]
@@ -155,9 +153,27 @@ class WebTablePage(BasePage):
             data.append(self.check_count_rows())
         return data
 
-
     def check_count_rows(self):
         list_rows = self.elements_are_present(self.locators.FULL_PEOPLE_LIST)
         return len(list_rows)
 
 
+class ButtonPage(BasePage):
+    locators = ButtonPageLocators()
+
+    def click_on_different_button(self, type_click):
+        if type_click == "double":
+            self.go_to_element(self.element_is_visible(self.locators.DOUBLE_BUTTON_CLICK))
+            self.action_double_click(self.element_is_visible(self.locators.DOUBLE_BUTTON_CLICK))
+            return self.check_clicked_on_the_button(self.locators.SUCCESS_DOUBLE)
+        if type_click == "right":
+            self.go_to_element(self.element_is_visible(self.locators.RIGHT_CLICK_BUTTON))
+            self.action_right_click(self.element_is_visible(self.locators.RIGHT_CLICK_BUTTON))
+            return self.check_clicked_on_the_button(self.locators.SUCCESS_RIGHT)
+        if type_click == "click":
+            self.go_to_element(self.element_is_visible(self.locators.CLICK_ME_BUTTON))
+            self.element_is_visible(self.locators.CLICK_ME_BUTTON).click()
+            return self.check_clicked_on_the_button(self.locators.SUCCESS_CLICK_ME)
+
+    def check_clicked_on_the_button(self, element):
+        return self.element_is_present(element).text
