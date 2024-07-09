@@ -1,4 +1,4 @@
-from pages.alerts_frame_windows_page import BrowserWindowPage, AlertsPage
+from pages.alerts_frame_windows_page import BrowserWindowPage, AlertsPage, FramesPage, NestedFramesPage
 
 
 class TestAlertsFrameWindow:
@@ -39,3 +39,21 @@ class TestAlertsFrameWindow:
             alert_page.open()
             alert_text = alert_page.check_prompt_alert()
             assert alert_text == "You entered AUTOtest", "Prompt didn't work right"
+
+    class TestFramesPage:
+        def test_frame(self, driver):
+            frame_page = FramesPage(driver, "https://demoqa.com/frames")
+            frame_page.open()
+            result_frame1 = frame_page.check_frame('frame1')
+            result_frame2 = frame_page.check_frame('frame2')
+            assert result_frame1 == ('This is a sample page', '500px', '350px'), "Frame doesn't exist"
+            assert result_frame2 == ('This is a sample page', '100px', '100px'), "Frame doesn't exist"
+
+    class TestNestedFrames:
+
+        def test_nested_frames(self, driver):
+            nested_frame_page = NestedFramesPage(driver, "https://demoqa.com/nestedframes")
+            nested_frame_page.open()
+            parent_text, child_text = nested_frame_page.check_nested_frame()
+            assert parent_text == 'Parent iframe', 'Nested frame does not exist'
+            assert child_text == 'Child iframe', 'Nested frame does not exist'
