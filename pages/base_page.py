@@ -44,4 +44,9 @@ class BasePage:
         self.driver.execute_script("document.getElementsByTagName('footer')[0].remove();")
         self.driver.execute_script(" document.getElementById('close-fixedban').remove();")
 
+    def action_drag_and_drop_by_offset(self, element, x_cootds=0, y_coords=0):
+        action = ActionChains(self.driver)
+        action.drag_and_drop_by_offset(element, x_cootds, y_coords)
+        action.perform()
+
 
