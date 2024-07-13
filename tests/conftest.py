@@ -1,3 +1,6 @@
+import datetime
+
+import allure
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -12,4 +15,6 @@ def driver():
     driver = webdriver.Chrome(options=options, service=ChromeService(ChromeDriverManager().install()))
     driver.maximize_window()
     yield driver
-    # driver.quit()
+    attach = driver.get_screenshot_as_png()
+    allure.attach(attach, name=f"Screen {datetime.datetime.today()}", attachment_type=allure.attachment_type.PNG)
+    driver.quit()
